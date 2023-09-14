@@ -25,6 +25,7 @@ export class MythicalWeaponStore {
       const sql = "SELECT * FROM mythical_weapons WHERE id=($1)";
       const result = await conn.query(sql, [id]);
       conn.release();
+
       return result.rows[0];
     } catch (err) {
       throw new Error(`Cannot get weapons ${err}`);
@@ -34,10 +35,11 @@ export class MythicalWeaponStore {
     try {
       const conn = await Client.connect();
       const sql =
-        "INSERT INTO mythical_weapons (name , type, weight) VALUES ($1, $2, $3)";
+        "INSERT INTO mythical_weapons (name , type, weight) VALUES ($1, $2, $3) RETURNING *";
 
       const result = await conn.query(sql, [weap.name, weap.type, weap.weight]);
       const weapon = result.rows[0];
+
       conn.release();
       return weapon;
     } catch (err) {
